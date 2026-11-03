@@ -9,7 +9,7 @@ const {run,get,all} = require('./db');
 const {sign,authenticate,tenantAccess,requireAdmin,secret} = require('./auth');
 
 const app = express();
-app.use(cors({origin:process.env.CLIENT_ORIGIN || 'http://localhost:5173'}));
+app.use(cors({   origin: [     'http://localhost:5173',     'https://aruna-kanban-frontend.onrender.com'   ],   credentials: true }));
 app.use(express.json());
 const server = http.createServer(app);
 const io = new Server(server,{cors:{origin:process.env.CLIENT_ORIGIN || 'http://localhost:5173'}});
