@@ -12,7 +12,7 @@ const app = express();
 app.use(cors({   origin: [     'http://localhost:5173',     'https://aruna-kanban-frontend.onrender.com'   ],   credentials: true }));
 app.use(express.json());
 const server = http.createServer(app);
-const io = new Server(server,{cors:{origin:process.env.CLIENT_ORIGIN || 'http://localhost:5173'}});
+const io = new Server(server, {   cors: {     origin: [       'http://localhost:5173',       'https://aruna-kanban-frontend.onrender.com'     ],     credentials: true   } });
 
 async function log(tenantId,userId,action,type,id,details='') {
   await run('INSERT INTO activity_logs(tenant_id,user_id,action,entity_type,entity_id,details) VALUES(?,?,?,?,?,?)',
