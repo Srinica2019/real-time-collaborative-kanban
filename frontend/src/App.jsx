@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {io} from 'socket.io-client';
 
-const API='http://localhost:4000/api';
+const API='https://aruna-kanban-backend.onrender.com/api';
 function App(){
  const [token,setToken]=useState(localStorage.getItem('token')||'');
  const [user,setUser]=useState(null),[tenants,setTenants]=useState([]),[tenantId,setTenantId]=useState('');
@@ -31,7 +31,7 @@ function App(){
  async function loadActivity(){if(tenantId)try{setActivity(await api('/activity?tenantId='+tenantId))}catch{}}
  useEffect(()=>{if(token){api('/auth/me').then(d=>setUser(d.user)).catch(()=>logout());loadTenants().catch(()=>{});}},[token]);
  useEffect(()=>{if(token&&tenantId){loadBoards().catch(e=>setMessage(e.message));loadActivity();}},[token,tenantId]);
- useEffect(()=>{if(token&&tenantId){const s=io('http://localhost:4000',{auth:{token}});s.on('presence:update',d=>{if(String(d.tenantId)===String(tenantId))setPresence(d.users)});['task:created','task:updated','task:moved','task:deleted','board:changed'].forEach(ev=>s.on(ev,()=>{loadBoard();loadActivity()}));return()=>s.disconnect();}},[token,tenantId,boardId]);
+ useEffect(()=>{if(token&&tenantId){const s=io('https://aruna-kanban-backend.onrender.com',{auth:{token}});s.on('presence:update',d=>{if(String(d.tenantId)===String(tenantId))setPresence(d.users)});['task:created','task:updated','task:moved','task:deleted','board:changed'].forEach(ev=>s.on(ev,()=>{loadBoard();loadActivity()}));return()=>s.disconnect();}},[token,tenantId,boardId]);
  useEffect(()=>{if(boardId&&tenantId)loadBoard(boardId).catch(()=>{});},[boardId,tenantId]);
  function logout(){localStorage.removeItem('token');setToken('');setUser(null);setTenantId('');setBoard(null);}
  async function createBoard(){try{const b=await api('/boards',{method:'POST',body:JSON.stringify({tenantId:Number(tenantId),name:newBoard})});setBoards([b,...boards]);setBoardId(String(b.id));}catch(e){setMessage(e.message)}}
